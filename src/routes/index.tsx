@@ -251,8 +251,8 @@ function Index() {
                 }
               />
 
-              <Button type="submit" variant="hero" size="lg" className="w-full">
-                Submit to Accounts
+              <Button type="submit" variant="hero" size="lg" className="w-full" disabled={submitting}>
+                {submitting ? "Submitting..." : "Submit to Accounts"}
               </Button>
             </form>
           )}
