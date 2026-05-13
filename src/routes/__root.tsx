@@ -72,14 +72,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { title: "DoorDash" },
+      { name: "description", content: "Umair Accounts Hub is a landing page for collecting restaurant account and contact information." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { property: "og:title", content: "DoorDash" },
+      { property: "og:description", content: "Umair Accounts Hub is a landing page for collecting restaurant account and contact information." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "DoorDash" },
+      { name: "twitter:description", content: "Umair Accounts Hub is a landing page for collecting restaurant account and contact information." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/06877112-4052-4c74-9c3c-f62737bba42e/id-preview-7857e6d4--cb86783f-518b-4e6f-8d3e-c78c806dd77a.lovable.app-1778663987481.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/06877112-4052-4c74-9c3c-f62737bba42e/id-preview-7857e6d4--cb86783f-518b-4e6f-8d3e-c78c806dd77a.lovable.app-1778663987481.png" },
     ],
     links: [
       {
