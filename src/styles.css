@@ -19,6 +19,10 @@
  */
 
 @theme inline {
+  --color-gradient-primary: var(--gradient-primary);
+  --color-gradient-subtle: var(--gradient-subtle);
+  --shadow-elegant: var(--shadow-elegant);
+  --shadow-glow: var(--shadow-glow);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
