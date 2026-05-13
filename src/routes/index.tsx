@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,8 +17,9 @@ import {
   Lock,
   Eye,
   EyeOff,
-  ShoppingBag,
 } from "lucide-react";
+import { submitIntake } from "@/lib/submissions.functions";
+import doordashLogo from "@/assets/doordash-logo.jpeg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -64,12 +66,14 @@ function Index() {
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
   const [submitted, setSubmitted] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const submit = useServerFn(submitIntake);
 
   const update = (k: keyof FormData) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm((f) => ({ ...f, [k]: e.target.value }));
   };
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const result = schema.safeParse(form);
     if (!result.success) {
@@ -83,8 +87,17 @@ function Index() {
       return;
     }
     setErrors({});
-    setSubmitted(true);
-    toast.success("Details submitted to the accounts department");
+    setSubmitting(true);
+    try {
+      await submit({ data: form });
+      setSubmitted(true);
+      toast.success("Details submitted to the accounts department");
+    } catch (err) {
+      console.error(err);
+      toast.error("Submission failed. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -97,15 +110,14 @@ function Index() {
             Accounts Department
           </div>
 
-          {/* Logo behind name */}
-          <div className="relative">
-            <ShoppingBag
-              className="absolute -left-4 -top-6 w-32 h-32 text-primary/15"
-              strokeWidth={1.5}
-              aria-hidden
+          <div className="space-y-4">
+            <img
+              src={doordashLogo}
+              alt="DoorDash logo"
+              className="h-14 w-auto"
             />
-            <h1 className="relative text-4xl md:text-5xl font-bold tracking-tight text-foreground leading-tight">
-              <span className="text-primary">DoorDash</span> Accounts Intake
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground leading-tight">
+              Accounts Intake
             </h1>
           </div>
 
@@ -239,8 +251,8 @@ function Index() {
                 }
               />
 
-              <Button type="submit" variant="hero" size="lg" className="w-full">
-                Submit to Accounts
+              <Button type="submit" variant="hero" size="lg" className="w-full" disabled={submitting}>
+                {submitting ? "Submitting..." : "Submit to Accounts"}
               </Button>
             </form>
           )}
