@@ -197,7 +197,7 @@ function Index() {
               </Button>
             </div>
           ) : (
-            <form id="intake-form" onSubmit={onSubmit} className="space-y-5 pb-24 lg:pb-0" noValidate>
+            <form id="intake-form" onSubmit={onSubmit} className="space-y-5" noValidate>
               <div className="space-y-2">
                 <h2 className="text-2xl font-semibold tracking-tight">Banking Details</h2>
                 <p className="text-sm text-muted-foreground">All fields are required.</p>
@@ -275,21 +275,6 @@ function Index() {
         </Card>
       </div>
 
-      {!submitted && (
-        <div className="fixed bottom-0 inset-x-0 z-40 border-t border-border/60 bg-background/85 backdrop-blur-md px-4 py-3 shadow-[0_-4px_20px_-8px_rgba(0,0,0,0.15)]">
-          <div className="max-w-5xl mx-auto">
-            <Button
-              type="submit"
-              form="intake-form"
-              size="lg"
-              className="w-full bg-[#FF3008] text-white hover:bg-[#EB1700] shadow-elegant"
-              disabled={submitting}
-            >
-              {submitting ? "Submitting..." : "Submit to Accounts"}
-            </Button>
-          </div>
-        </div>
-      )}
 
       <AlertDialog open={confirmOpen} onOpenChange={(o) => !submitting && setConfirmOpen(o)}>
         <AlertDialogContent>
