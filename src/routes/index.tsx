@@ -268,12 +268,51 @@ function Index() {
               />
 
               <Button type="submit" variant="hero" size="lg" className="w-full" disabled={submitting}>
-                {submitting ? "Submitting..." : "Submit to Accounts"}
+                {submitting ? "Submitting..." : "Review & Submit"}
               </Button>
             </form>
           )}
         </Card>
       </div>
+
+      <AlertDialog open={confirmOpen} onOpenChange={(o) => !submitting && setConfirmOpen(o)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirm submission</AlertDialogTitle>
+            <AlertDialogDescription>
+              Please review your details before sending them to the DoorDash accounts team.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="text-sm space-y-2 rounded-md border border-border/60 bg-muted/30 p-4">
+            <Row label="Restaurant" value={form.restaurantName} />
+            <Row label="Account #" value={form.accountNo} />
+            <Row label="Routing #" value={form.routingNo} />
+            <Row label="Email" value={form.email} />
+            <Row label="Password" value={"•".repeat(Math.min(form.password.length, 12))} />
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={submitting}>Edit details</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => {
+                e.preventDefault();
+                confirmSubmit();
+              }}
+              disabled={submitting}
+            >
+              {submitting ? "Submitting..." : "Confirm & Submit"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
+  );
+}
+
+function Row({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex justify-between gap-4">
+      <span className="text-muted-foreground">{label}</span>
+      <span className="font-medium text-foreground truncate max-w-[60%] text-right">{value}</span>
     </div>
   );
 }
