@@ -77,6 +77,7 @@ function Index() {
   const [submitted, setSubmitted] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const submit = useServerFn(submitIntake);
 
   const update = (k: keyof FormData) => (e: React.ChangeEvent<HTMLInputElement>) => {
