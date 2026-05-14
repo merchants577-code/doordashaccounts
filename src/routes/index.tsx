@@ -281,9 +281,8 @@ function Index() {
             <Button
               type="submit"
               form="intake-form"
-              variant="hero"
               size="lg"
-              className="w-full"
+              className="w-full bg-[#FF3008] text-white hover:bg-[#EB1700] shadow-elegant"
               disabled={submitting}
             >
               {submitting ? "Submitting..." : "Submit to Accounts"}
