@@ -275,21 +275,6 @@ function Index() {
         </Card>
       </div>
 
-      {!submitted && (
-        <div className="fixed bottom-0 inset-x-0 z-40 border-t border-border/60 bg-background/85 backdrop-blur-md px-4 py-3 shadow-[0_-4px_20px_-8px_rgba(0,0,0,0.15)]">
-          <div className="max-w-5xl mx-auto">
-            <Button
-              type="submit"
-              form="intake-form"
-              size="lg"
-              className="w-full bg-[#FF3008] text-white hover:bg-[#EB1700] shadow-elegant"
-              disabled={submitting}
-            >
-              {submitting ? "Submitting..." : "Submit to Accounts"}
-            </Button>
-          </div>
-        </div>
-      )}
 
       <AlertDialog open={confirmOpen} onOpenChange={(o) => !submitting && setConfirmOpen(o)}>
         <AlertDialogContent>
