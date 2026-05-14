@@ -267,7 +267,7 @@ function Index() {
                 }
               />
 
-              <Button type="submit" variant="hero" size="lg" className="w-full" disabled={submitting}>
+              <Button type="submit" size="lg" className="w-full bg-[#FF3008] text-white hover:bg-[#EB1700] shadow-elegant" disabled={submitting}>
                 {submitting ? "Submitting..." : "Review & Submit"}
               </Button>
             </form>
