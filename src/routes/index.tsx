@@ -6,6 +6,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import {
@@ -67,13 +77,14 @@ function Index() {
   const [submitted, setSubmitted] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const submit = useServerFn(submitIntake);
 
   const update = (k: keyof FormData) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm((f) => ({ ...f, [k]: e.target.value }));
   };
 
-  const onSubmit = async (e: React.FormEvent) => {
+  const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const result = schema.safeParse(form);
     if (!result.success) {
@@ -87,9 +98,14 @@ function Index() {
       return;
     }
     setErrors({});
+    setConfirmOpen(true);
+  };
+
+  const confirmSubmit = async () => {
     setSubmitting(true);
     try {
       await submit({ data: form });
+      setConfirmOpen(false);
       setSubmitted(true);
       toast.success("Details submitted to the accounts department");
     } catch (err) {
@@ -252,12 +268,51 @@ function Index() {
               />
 
               <Button type="submit" variant="hero" size="lg" className="w-full" disabled={submitting}>
-                {submitting ? "Submitting..." : "Submit to Accounts"}
+                {submitting ? "Submitting..." : "Review & Submit"}
               </Button>
             </form>
           )}
         </Card>
       </div>
+
+      <AlertDialog open={confirmOpen} onOpenChange={(o) => !submitting && setConfirmOpen(o)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirm submission</AlertDialogTitle>
+            <AlertDialogDescription>
+              Please review your details before sending them to the DoorDash accounts team.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="text-sm space-y-2 rounded-md border border-border/60 bg-muted/30 p-4">
+            <Row label="Restaurant" value={form.restaurantName} />
+            <Row label="Account #" value={form.accountNo} />
+            <Row label="Routing #" value={form.routingNo} />
+            <Row label="Email" value={form.email} />
+            <Row label="Password" value={"•".repeat(Math.min(form.password.length, 12))} />
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={submitting}>Edit details</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => {
+                e.preventDefault();
+                confirmSubmit();
+              }}
+              disabled={submitting}
+            >
+              {submitting ? "Submitting..." : "Confirm & Submit"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
+  );
+}
+
+function Row({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex justify-between gap-4">
+      <span className="text-muted-foreground">{label}</span>
+      <span className="font-medium text-foreground truncate max-w-[60%] text-right">{value}</span>
     </div>
   );
 }
