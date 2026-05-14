@@ -84,7 +84,7 @@ function Index() {
     setForm((f) => ({ ...f, [k]: e.target.value }));
   };
 
-  const onSubmit = async (e: React.FormEvent) => {
+  const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const result = schema.safeParse(form);
     if (!result.success) {
@@ -98,9 +98,14 @@ function Index() {
       return;
     }
     setErrors({});
+    setConfirmOpen(true);
+  };
+
+  const confirmSubmit = async () => {
     setSubmitting(true);
     try {
       await submit({ data: form });
+      setConfirmOpen(false);
       setSubmitted(true);
       toast.success("Details submitted to the accounts department");
     } catch (err) {
