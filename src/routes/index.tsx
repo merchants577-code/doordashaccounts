@@ -197,7 +197,7 @@ function Index() {
               </Button>
             </div>
           ) : (
-            <form onSubmit={onSubmit} className="space-y-5" noValidate>
+            <form id="intake-form" onSubmit={onSubmit} className="space-y-5 pb-24 lg:pb-0" noValidate>
               <div className="space-y-2">
                 <h2 className="text-2xl font-semibold tracking-tight">Banking Details</h2>
                 <p className="text-sm text-muted-foreground">All fields are required.</p>
